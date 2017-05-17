@@ -37,7 +37,7 @@ from model import Playlist
 # - Future file readers and video players can be provided and referenced in the
 #   config to extend the video player use to read from different file sources
 #   or use different video players.
-class VideoLooper(object):
+class MusicLooper(object):
 
     def __init__(self, config_path):
         """Create an instance of the main video looper application class. Must
@@ -47,20 +47,20 @@ class VideoLooper(object):
         self._config = ConfigParser.SafeConfigParser()
         if len(self._config.read(config_path)) == 0:
             raise RuntimeError('Failed to find configuration file at {0}, is the application properly installed?'.format(config_path))
-        self._console_output = self._config.getboolean('video_looper', 'console_output')
+        self._console_output = self._config.getboolean('music_looper', 'console_output')
         # Load configured video player and file reader modules.
         self._player = self._load_player()
         self._reader = self._load_file_reader()
         # Load other configuration values.
-        self._osd = self._config.getboolean('video_looper', 'osd')
-        self._is_random = self._config.getboolean('video_looper', 'is_random')
-        self._keyboard_control = self._config.getboolean('video_looper', 'keyboard_control')
+        self._osd = self._config.getboolean('music_looper', 'osd')
+        self._is_random = self._config.getboolean('music_looper', 'is_random')
+        self._keyboard_control = self._config.getboolean('music_looper', 'keyboard_control')
         # Parse string of 3 comma separated values like "255, 255, 255" into 
         # list of ints for colors.
-        self._bgcolor = map(int, self._config.get('video_looper', 'bgcolor') \
+        self._bgcolor = map(int, self._config.get('music_looper', 'bgcolor') \
                                              .translate(None, ',') \
                                              .split())
-        self._fgcolor = map(int, self._config.get('video_looper', 'fgcolor') \
+        self._fgcolor = map(int, self._config.get('music_looper', 'fgcolor') \
                                              .translate(None, ',') \
                                              .split())
         # Load sound volume file name value
@@ -87,14 +87,14 @@ class VideoLooper(object):
 
     def _load_player(self):
         """Load the configured video player and return an instance of it."""
-        module = self._config.get('video_looper', 'video_player')
-        return importlib.import_module('.' + module, 'Adafruit_Video_Looper') \
+        module = self._config.get('music_looper', 'music_player')
+        return importlib.import_module('.' + module, 'music_looper') \
             .create_player(self._config)
 
     def _load_file_reader(self):
         """Load the configured file reader and return an instance of it."""
-        module = self._config.get('video_looper', 'file_reader')
-        return importlib.import_module('.' + module, 'Adafruit_Video_Looper') \
+        module = self._config.get('music_looper', 'file_reader')
+        return importlib.import_module('.' + module, 'music_looper') \
             .create_file_reader(self._config)
 
     def _is_number(iself, s):
@@ -254,16 +254,16 @@ class VideoLooper(object):
 
 # Main entry point.
 if __name__ == '__main__':
-    print('Starting Adafruit Video Looper.')
+    print('Starting Music Looper.')
     # Default config path to /boot.
-    config_path = '/boot/video_looper.ini'
+    config_path = '/boot/music_looper.ini'
     # Override config path if provided as parameter.
     if len(sys.argv) == 2:
         config_path = sys.argv[1]
     # Create video looper.
-    videolooper = VideoLooper(config_path)
+    musiclooper = MusicLooper(config_path)
     # Configure signal handlers to quit on TERM or INT signal.
     signal.signal(signal.SIGTERM, videolooper.signal_quit)
     signal.signal(signal.SIGINT, videolooper.signal_quit)
     # Run the main loop.
-    videolooper.run()
+    musiclooper.run()
