@@ -38,7 +38,7 @@ class USBDriveReader(object):
 
     def idle_message(self):
         """Return a message to display when idle and no files are found."""
-        return 'Insert USB drive with compatible movies.'
+        return 'Insert USB drive with compatible songs.'
 
 
 def create_file_reader(config):

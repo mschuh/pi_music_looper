@@ -77,6 +77,7 @@ class MusicLooper(object):
         # Set other static internal state.
         self._extensions = self._player.supported_extensions()
         self._small_font = pygame.font.Font(None, 50)
+        self._medium_font = pygame.font.Font(None, 100)
         self._big_font   = pygame.font.Font(None, 250)
         self._running    = True
 
@@ -153,7 +154,7 @@ class MusicLooper(object):
         message if the on screen display is enabled.
         """
         # Print message to console with number of movies in playlist.
-        message = 'Found {0} movie{1}.'.format(playlist.length(), 
+        message = 'Found {0} song{1}.'.format(playlist.length(),
             's' if playlist.length() >= 2 else '')
         self._print(message)
         # Do nothing else if the OSD is turned off.
@@ -219,8 +220,19 @@ class MusicLooper(object):
             if not self._player.is_playing():
                 movie = playlist.get_next()
                 if movie is not None:
-                    # Start playing the first available movie.
-                    self._print('Playing movie: {0}'.format(movie))
+                    # Start playing the first available song
+                    label1 = self._render_text('Playing song:')
+                    l1w, l1h = label1.get_size()
+                    sw, sh = self._screen.get_size()
+                    label2 = self._render_text(os.path.splitext(os.path.basename(movie))[0], self._medium_font)
+                    l2w, l2h = label2.get_size()
+                    # Clear screen and draw text with line1 above line2 and all
+                    # centered horizontally and vertically.
+                    self._screen.fill(self._bgcolor)
+                    self._screen.blit(label1, (sw/2-l1w/2, sh/2-l2h/2-l1h))
+                    self._screen.blit(label2, (sw/2-l2w/2, sh/2-l2h/2))
+                    pygame.display.update()
+                    self._print('Playing song: {0}'.format(movie))
                     self._player.play(movie, loop=playlist.length() == 1, vol = self._sound_vol)
             # Check for changes in the file search path (like USB drives added)
             # and rebuild the playlist.
