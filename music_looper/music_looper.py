@@ -263,7 +263,7 @@ if __name__ == '__main__':
     # Create video looper.
     musiclooper = MusicLooper(config_path)
     # Configure signal handlers to quit on TERM or INT signal.
-    signal.signal(signal.SIGTERM, videolooper.signal_quit)
-    signal.signal(signal.SIGINT, videolooper.signal_quit)
+    signal.signal(signal.SIGTERM, musiclooper.signal_quit)
+    signal.signal(signal.SIGINT, musiclooper.signal_quit)
     # Run the main loop.
     musiclooper.run()
